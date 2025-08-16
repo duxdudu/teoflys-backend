@@ -19,16 +19,44 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: [
-    'http://localhost:3000', 
-    'http://127.0.0.1:3000',
-    'https://teofly-photography.onrender.com',
-    'https://teoflys-frontend.vercel.app'
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+     const allowedOrigins = [
+      'http://localhost:3000', 
+      'http://127.0.0.1:3000',
+      'https://teofly-photography.onrender.com',
+      'https://teoflys-photography.onrender.com',
+      'https://teoflys-frontend.vercel.app'
+    ];
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      // Log blocked origins for debugging
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+  optionsSuccessStatus: 200
 }));
+
+// Handle preflight requests
+app.options('*', cors());
+
+// CORS debugging middleware
+app.use((req, res, next) => {
+  console.log('Request origin:', req.headers.origin);
+  console.log('Request method:', req.method);
+  console.log('Request headers:', req.headers);
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Update the middleware section with secure headers
