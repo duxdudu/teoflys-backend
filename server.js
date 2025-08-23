@@ -28,7 +28,8 @@ app.use(cors({
       'http://127.0.0.1:3000',
       'https://teofly-photography.onrender.com',
       'https://teoflys-photography.onrender.com',
-      'https://teoflys-frontend.vercel.app'
+      'https://teoflys-frontend.vercel.app',
+      'https://teos-visual.onrender.com/'
     ];
     
     // Check if origin is in allowed list
